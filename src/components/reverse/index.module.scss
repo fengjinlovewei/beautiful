@@ -1,0 +1,44 @@
+.reverse-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .reverse-container-info {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    perspective: 800px;
+    .reverse-item {
+      transition-duration: 1s;
+      backface-visibility: hidden;
+    }
+    .front {
+      visibility: visible;
+      position: relative;
+      transform: rotateY(0deg);
+      z-index: 20;
+    }
+    .back {
+      visibility: hidden;
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      margin: auto;
+      transform: rotateY(180deg);
+      z-index: 1;
+    }
+    &.move {
+      .front {
+        visibility: hidden;
+        z-index: 20;
+        transform: rotateY(-180deg);
+      }
+      .back {
+        visibility: visible;
+        z-index: 1;
+        transform: rotateY(0deg);
+      }
+    }
+  }
+}
