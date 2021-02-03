@@ -17,14 +17,14 @@ import Style from './index.module.scss';
  * 4（下面）和 5（上面） 的宽高必须一致
  * 实际上，只要确定了正面（后者后面） 和 右侧（或者左侧）的宽高，就能确定整个立方体的尺寸
  * 再进一步可发现，其实只要确定三条边就能确定一个立方体，那就是 正面的宽(x) 正面的高(y) 右侧面的宽(z)
- * 所以 planeSize 的参数，只需要传入3个值就能确定 [x, y, z]
+ * 所以 planeSize 的参数，只需要传入3个值[x, y, z]就能确定
  */
 interface CubeProps {
   planeSize: number[];
   planeNode: React.ReactElement[];
   index: number;
   speed?: number;
-  unit?: 'px' | 'vw' | 'rem' | 'em' | 'vh';
+  unit?: 'px' | 'rem' | 'vw' | 'vh';
 }
 
 const Cube: React.FC<CubeProps> = (props) => {
@@ -53,7 +53,7 @@ const Cube: React.FC<CubeProps> = (props) => {
       style: {
         width: sizeX + unit,
         height: sizeY + unit,
-        transform: `translateZ(-${getDistance(sizeZ / 2)}) rotateX(180deg)`,
+        transform: `translateZ(${getDistance(-sizeZ / 2)}) rotateX(180deg)`,
       },
     },
     {
