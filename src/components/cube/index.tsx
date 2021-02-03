@@ -16,10 +16,11 @@ import Style from './index.module.scss';
  * 1（右面）和 3（左面） 的宽高必须一致
  * 4（下面）和 5（上面） 的宽高必须一致
  * 实际上，只要确定了正面（后者后面） 和 右侧（或者左侧）的宽高，就能确定整个立方体的尺寸
- * 所以 planeSize 的参数，只需要传入2个宽高数组即可
+ * 再进一步可发现，其实只要确定三条边就能确定一个立方体，那就是 正面的宽(x) 正面的高(y) 右侧面的宽(z)
+ * 所以 planeSize 的参数，只需要传入3个值就能确定 [x, y, z]
  */
 interface CubeProps {
-  planeSize: [[number, number], [number, number]];
+  planeSize: number[];
   planeNode: React.ReactElement[];
   index: number;
   speed?: number;
@@ -28,66 +29,55 @@ interface CubeProps {
 
 const Cube: React.FC<CubeProps> = (props) => {
   const { speed = 1, index = 0, planeNode, planeSize, unit = 'px' } = props;
-  const [size02, size13] = planeSize;
+  const [sizeX, sizeY, sizeZ] = planeSize;
   // 系数
-  const coefficient = 0.902;
+  const coefficient = 1200 / (1200 + sizeZ / 2); //0.902;
   // 距离
-  const getDistance = (n: number) => n * coefficient + unit;
+  const getDistance = (n: number) => n + unit;
   const List = [
     {
       style: {
-        width: size02[0] + unit,
-        height: size02[1] + unit,
-        transform: `translateZ(${getDistance(size13[0] / 2)}) rotateX(0deg) scale(${coefficient})`,
+        width: sizeX + unit,
+        height: sizeY + unit,
+        transform: `translateZ(${getDistance(sizeZ / 2)}) rotateX(0deg)`,
       },
     },
     {
       style: {
-        width: size13[0] + unit,
-        height: size13[1] + unit,
-        transform: `translate3d(${getDistance(
-          size02[0] - size13[0] / 2,
-        )}, 0, 0) rotateY(90deg) scale(${coefficient})`,
+        width: sizeZ + unit,
+        height: sizeY + unit,
+        transform: `translate3d(${getDistance(sizeX - sizeZ / 2)}, 0, 0) rotateY(90deg) `,
       },
     },
     {
       style: {
-        width: size02[0] + unit,
-        height: size02[1] + unit,
-        transform: `translateZ(-${getDistance(
-          size13[0] / 2,
-        )}) rotateX(180deg) scale(${coefficient})`,
+        width: sizeX + unit,
+        height: sizeY + unit,
+        transform: `translateZ(-${getDistance(sizeZ / 2)}) rotateX(180deg)`,
       },
     },
     {
       style: {
-        width: size13[0] + unit,
-        height: size13[1] + unit,
-        transform: `translate3d(${getDistance(
-          size02[0] - size13[0] / 2,
-        )}, 0, 0) rotateY(-90deg) scale(${coefficient})`,
+        width: sizeZ + unit,
+        height: sizeY + unit,
+        transform: `translate3d(${getDistance(-(sizeX - sizeZ / 2))}, 0, 0) rotateY(-90deg) `,
       },
     },
     {
       style: {
-        width: size02[0] + unit,
-        height: size13[0] + unit,
-        transform: `translate3d(0, ${getDistance(
-          size13[0] / 2,
-        )}, 0) rotateX(-90deg) scale(${coefficient})`,
+        width: sizeX + unit,
+        height: sizeZ + unit,
+        transform: `translate3d(0, ${getDistance(sizeY - sizeZ / 2)}, 0) rotateX(-90deg)`,
       },
     },
     {
       style: {
-        width: size02[0] + unit,
-        height: size13[0] + unit,
-        transform: `translate3d(0, -${getDistance(
-          size13[0] / 2,
-        )}, 0) rotateX(90deg) scale(${coefficient})`,
+        width: sizeX + unit,
+        height: sizeZ + unit,
+        transform: `translate3d(0, ${getDistance(-(sizeY - sizeZ / 2))}, 0) rotateX(90deg)`,
       },
     },
   ];
-  console.log(List);
   const degMaps: number[] = [
     [0, 0],
     [0, -90],
@@ -97,14 +87,14 @@ const Cube: React.FC<CubeProps> = (props) => {
     [-90, 0],
   ][index % 6];
   return (
-    <div className={`${Style['cube-container']}`}>
+    <div className={`${Style['cube-container']}`} style={{ transform: `scale(${coefficient})` }}>
       <div
         className={`${Style['cube-info']}`}
         style={{
           transform: `rotateX(${degMaps[0]}deg) rotateY(${degMaps[1]}deg) `,
           transitionDuration: speed + 's',
-          width: size02[0] + unit,
-          height: size02[1] + unit,
+          width: sizeX + unit,
+          height: sizeY + unit,
         }}
       >
         {List.map((item, i) => {

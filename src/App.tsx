@@ -15,10 +15,7 @@ function App() {
   const cubeMaps = Array(6)
     .fill(null)
     .map((item, i) => <div className={`cube cube-${i}`}>{i}</div>);
-  const cubeSizeMaps: [[number, number], [number, number]] = [
-    [30, 30],
-    [70, 30],
-  ];
+  const cubeSizeMaps = [100, 150, 150];
   return (
     <div className="App">
       <div className="App-header">
@@ -37,7 +34,7 @@ function App() {
         </div>
         <div className="type-item">
           <div>
-            <Cube planeNode={cubeMaps} planeSize={cubeSizeMaps} index={index} unit="vw" />
+            <Cube planeNode={cubeMaps} planeSize={cubeSizeMaps} index={index} unit="px" />
           </div>
           <div style={{ marginTop: '100px' }}>
             <button onClick={btnCube}>变换</button>
