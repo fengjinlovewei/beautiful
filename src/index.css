@@ -2,6 +2,9 @@
   margin: 0;
   padding: 0;
 }
+html {
+  font-size: 20px;
+}
 .d1 {
   width: 200px;
   height: 400px;

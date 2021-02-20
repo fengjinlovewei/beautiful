@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useEffect } from 'react';
 import Style from './index.module.scss';
 /**
  * 假设这个立方体在你的正前方，它一共有6个面
@@ -6,8 +6,8 @@ import Style from './index.module.scss';
  * 右侧面的平面 index 为 1，
  * 后面的平面（也即是和正面平面相对的那个面） index 为 2
  * 左侧面的平面（也即是和右侧面相对的那个面） index 为 3
- * 上面的平面 index 为 4
- * 下面的平面（也就是上面相对的那个面） index 为 5
+ * 下面的平面 index 为 4
+ * 上面的平面（也就是下面相对的那个面） index 为 5
  */
 
 /**
@@ -27,71 +27,178 @@ interface CubeProps {
   unit?: 'px' | 'rem' | 'vw' | 'vh';
 }
 
+interface dataStorageProps {
+  lastIndex: number | null;
+  lastMap: number[] | null;
+}
+
+interface logicProps {
+  [x: string]: number[];
+}
+
+// x 轴 顺时针为正数，逆时针为负数
+// y 轴 顺时针为负数，逆时针为正数
+const originMaps: number[][] = [
+  [0, 0],
+  [0, -90],
+  [0, -180],
+  [0, 90],
+  [90, 0],
+  [-90, 0],
+];
+// x 轴 顺时针为正数，逆时针为负数
+// y 轴 顺时针为负数，逆时针为正数
+const logicMaps: logicProps = {
+  '01': [0, -1],
+  '02': [0, 2],
+  '03': [0, 1],
+  '04': [1, 0],
+  '05': [-1, 0],
+
+  '10': [0, 1],
+  '12': [0, -1],
+  '13': [0, 2],
+  '14': [1, 0],
+  '15': [-1, 0],
+
+  '20': [0, 2],
+  '21': [0, -1],
+  '23': [0, 1],
+  '24': [1, 0],
+  '25': [-1, 0],
+
+  '30': [0, -1],
+  '31': [0, 2],
+  '32': [0, 1],
+  '34': [1, 0],
+  '35': [-1, 0],
+
+  '40': [0, 1],
+  '41': [1, 0],
+  '42': [0, -1],
+  '43': [-1, 0],
+  '45': [2, 0],
+
+  '50': [1, 0],
+  '51': [0, -1],
+  '52': [-1, 0],
+  '53': [0, 1],
+  '54': [2, 0],
+};
+const transformValue = (arr: number[]) => {
+  const [x = 0, y = 0] = arr;
+  return `rotateX(${x}deg) rotateY(${y}deg)`;
+};
 const Cube: React.FC<CubeProps> = (props) => {
   const { speed = 1, index = 0, planeNode, planeSize, unit = 'px' } = props;
   const [sizeX, sizeY, sizeZ] = planeSize;
-  // 系数
-  const coefficient = 1200 / (1200 + sizeZ / 2); //0.902;
-  // 距离
-  const getDistance = (n: number) => n + unit;
+  const dataStorage = useRef<dataStorageProps>({ lastIndex: null, lastMap: null });
+  // 缩放系数
+  // 由于使用了 perspective ，使得子元素 translateZ 值 将影响此元素的缩放比例
+  // 当 translateZ 的值为正值，代表此元素离你更近了，所以就变大了
+  // 当 translateZ 的值为负值，代表此元素离你更远了，所以就变小了
+  // getCoefficient 的作用就是把缩放的元素，还原至原始大小
+  const getCoefficient = (): number => {
+    const size = {
+      px() {
+        return sizeZ;
+      }, //0.902
+      rem() {
+        const HTML = document.getElementsByTagName('html')[0];
+        const fontSize = window.getComputedStyle(HTML, null).getPropertyValue('font-size');
+        return parseFloat(fontSize) * sizeZ;
+      },
+      vw() {
+        return (window.innerWidth / 100) * sizeZ;
+      },
+      vh() {
+        return (window.innerHeight / 100) * sizeZ;
+      },
+    }[unit]();
+    return 1200 / (1200 + size / 2);
+  };
   const List = [
     {
       style: {
         width: sizeX + unit,
         height: sizeY + unit,
-        transform: `translateZ(${getDistance(sizeZ / 2)}) rotateX(0deg)`,
+        transform: `translateZ(${sizeZ / 2}${unit}) rotateX(0deg)`,
       },
     },
     {
       style: {
         width: sizeZ + unit,
         height: sizeY + unit,
-        transform: `translate3d(${getDistance(sizeX - sizeZ / 2)}, 0, 0) rotateY(90deg) `,
+        transform: `translate3d(${sizeX - sizeZ / 2}${unit}, 0, 0) rotateY(90deg) `,
       },
     },
     {
       style: {
         width: sizeX + unit,
         height: sizeY + unit,
-        transform: `translateZ(${getDistance(-sizeZ / 2)}) rotateX(180deg)`,
+        transform: `translateZ(${-sizeZ / 2}${unit}) rotateX(180deg)`,
       },
     },
     {
       style: {
         width: sizeZ + unit,
         height: sizeY + unit,
-        transform: `translate3d(${getDistance(-(sizeX - sizeZ / 2))}, 0, 0) rotateY(-90deg) `,
+        transform: `translate3d(${-(sizeX - sizeZ / 2)}${unit}, 0, 0) rotateY(-90deg) `,
       },
     },
     {
       style: {
         width: sizeX + unit,
         height: sizeZ + unit,
-        transform: `translate3d(0, ${getDistance(sizeY - sizeZ / 2)}, 0) rotateX(-90deg)`,
+        transform: `translate3d(0, ${sizeY - sizeZ / 2}${unit}, 0) rotateX(-90deg)`,
       },
     },
     {
       style: {
         width: sizeX + unit,
         height: sizeZ + unit,
-        transform: `translate3d(0, ${getDistance(-(sizeY - sizeZ / 2))}, 0) rotateX(90deg)`,
+        transform: `translate3d(0, ${-(sizeY - sizeZ / 2)}${unit}, 0) rotateX(90deg)`,
       },
     },
   ];
-  const degMaps: number[] = [
-    [0, 0],
-    [0, -90],
-    [180, 0],
-    [0, 90],
-    [90, 0],
-    [-90, 0],
-  ][index % 6];
+  const getTransform = (): string => {
+    console.log('进入函数');
+    const i = index % 6;
+    const { current } = dataStorage;
+    const { lastIndex, lastMap } = current;
+
+    // 如果是初始化， 直接返回上一个
+    if (lastIndex === null) {
+      // 记录上一个索引为当前
+      current.lastIndex = i;
+      // 记录上一个坐标信息为当前
+      current.lastMap = originMaps[i];
+      return transformValue(current.lastMap);
+    }
+    // 记录上一个索引为当前
+    current.lastIndex = i;
+    console.log(current.lastIndex, lastIndex);
+    //if (i === lastIndex) return transform(lastMap || []);
+    console.log(`${lastIndex}${i}`);
+    const currentLogic: number[] = (logicMaps[`${lastIndex}${i}`] || [2, 2]).map((item, s) => {
+      const value = (lastMap || [0, 0])[s];
+      return value + item * 90;
+    });
+    console.log(currentLogic);
+    return transformValue(currentLogic);
+  };
+  const ddd = getTransform();
+  console.log(ddd);
   return (
-    <div className={`${Style['cube-container']}`} style={{ transform: `scale(${coefficient})` }}>
+    <div
+      className={`${Style['cube-container']}`}
+      style={{ transform: `scale(${getCoefficient()})` }}
+    >
+      <div data-dd={ddd}></div>
       <div
         className={`${Style['cube-info']}`}
         style={{
-          transform: `rotateX(${degMaps[0]}deg) rotateY(${degMaps[1]}deg) `,
+          transform: ddd,
           transitionDuration: speed + 's',
           width: sizeX + unit,
           height: sizeY + unit,

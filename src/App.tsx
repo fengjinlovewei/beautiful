@@ -5,7 +5,7 @@ import './App.css';
 
 function App() {
   const [move, setMove] = useState<boolean>(false);
-  const [index, setIndex] = useState<number>(0);
+  const [index, setIndex] = useState<number>(3);
   const btnReverse = () => {
     setMove((val) => !val);
   };
@@ -15,10 +15,11 @@ function App() {
   const cubeMaps = Array(6)
     .fill(null)
     .map((item, i) => <div className={`cube cube-${i}`}>{i}</div>);
-  const cubeSizeMaps = [100, 150, 150];
+  const cubeSizeMaps = [10, 10, 10];
   return (
     <div className="App">
       <div className="App-header">
+        {/* 翻牌子 */}
         <div className="type-item">
           <div>
             <Reverse
@@ -32,9 +33,10 @@ function App() {
             <button onClick={btnReverse}>变换</button>
           </div>
         </div>
+        {/* 立方体 */}
         <div className="type-item">
           <div>
-            <Cube planeNode={cubeMaps} planeSize={cubeSizeMaps} index={index} unit="px" />
+            <Cube planeNode={cubeMaps} planeSize={cubeSizeMaps} index={index} unit="vw" />
           </div>
           <div style={{ marginTop: '100px' }}>
             <button onClick={btnCube}>变换</button>

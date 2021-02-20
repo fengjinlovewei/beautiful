@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" style="font-size: 20px">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      html {
+        font-size: 18px;
+      }
+    </style>
+  </head>
+  <body></body>
+  <script>
+    var el = document.getElementsByTagName('html')[0];
+    var style = window.getComputedStyle(el, null).getPropertyValue('font-size');
+    console.log(style);
+    console.log(el.style.fontSize);
+  </script>
+</html>

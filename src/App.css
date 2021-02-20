@@ -13,6 +13,9 @@
 .cube {
   width: 100%;
   height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .cube-0 {
   background-color: red;
