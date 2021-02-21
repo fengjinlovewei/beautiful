@@ -29,8 +29,7 @@ interface CubeProps {
 
 interface dataStorageProps {
   lastIndex: number | null;
-  lastDeg: number[];
-  lastLogic: number[];
+  lastMap: number[];
 }
 
 interface logicProps {
@@ -65,9 +64,9 @@ const logicMaps: logicProps = {
   '15': [-1, 0],
 
   '20': [0, 2],
-  '21': [0, 1],
+  '21': [0, -1],
   '22': [0, 0],
-  '23': [0, -1],
+  '23': [0, 1],
   '24': [1, 0],
   '25': [-1, 0],
 
@@ -83,7 +82,7 @@ const logicMaps: logicProps = {
   '42': [0, -1],
   '43': [-1, 0],
   '44': [0, 0],
-  '45': [-2, 0],
+  '45': [2, 0],
 
   '50': [1, 0],
   '51': [0, -1],
@@ -100,7 +99,7 @@ const Cube: React.FC<CubeProps> = (props) => {
   const { speed = 1, planeNode, planeSize, unit = 'px' } = props;
   const index = props.index % 6 >> 0;
   const [sizeX, sizeY, sizeZ] = planeSize;
-  const dataStorage = useRef<dataStorageProps>({ lastIndex: null, lastDeg: [], lastLogic: [0, 0] });
+  const dataStorage = useRef<dataStorageProps>({ lastIndex: null, lastMap: [] });
 
   // 缩放系数
   // 由于使用了 perspective ，使得子元素 translateZ 值 将影响此元素的缩放比例
@@ -172,25 +171,22 @@ const Cube: React.FC<CubeProps> = (props) => {
   ];
   const transformMove = useMemo((): string => {
     const { current } = dataStorage;
-    const { lastIndex, lastDeg, lastLogic } = current;
+    const { lastIndex, lastMap } = current;
     // 如果是初始化， 直接返回上一个
     if (lastIndex === null) {
       // 记录上一个 索引,和 坐标值 为当前
       dataStorage.current = {
         lastIndex: index,
-        lastDeg: originMaps[index],
-        lastLogic: [0, 0],
+        lastMap: originMaps[index],
       };
-      return transformValue(dataStorage.current.lastDeg);
+      return transformValue(dataStorage.current.lastMap);
     }
-    const currentLogic = logicMaps[`${lastIndex}${index}`];
-    const currentDeg: number[] = currentLogic.map((logic, i) => {
-      const lastDegValue = lastDeg[i];
-      const lastLogicValue = currentLogic[i];
-      return lastDegValue + logic * 90;
+    const currentLogic: number[] = logicMaps[`${lastIndex}${index}`].map((item, i) => {
+      const value = lastMap[i];
+      return value + item * 90;
     });
     console.log(`${lastIndex}${index}`);
-    console.log(currentDeg);
+    console.log(currentLogic);
     /*******/
     // 这尼玛真是个天坑啊！！！
     // 不使用setTimeoust，修改 useref 的值，和赋值 useref 会引起渲染2次！
@@ -199,11 +195,10 @@ const Cube: React.FC<CubeProps> = (props) => {
       // 记录上一个 索引,和 坐标值 为当前
       dataStorage.current = {
         lastIndex: index,
-        lastDeg: currentDeg,
-        lastLogic: currentLogic,
+        lastMap: currentLogic,
       };
     });
-    return transformValue(currentDeg);
+    return transformValue(currentLogic);
   }, [index]);
   return (
     <div className={`${Style['cube-container']}`} style={{ transform: `scale(${coefficient})` }}>

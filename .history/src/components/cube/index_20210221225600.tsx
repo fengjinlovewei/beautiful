@@ -30,7 +30,7 @@ interface CubeProps {
 interface dataStorageProps {
   lastIndex: number | null;
   lastDeg: number[];
-  lastLogic: number[];
+  lastLogic?: number[] | null;
 }
 
 interface logicProps {
@@ -65,9 +65,9 @@ const logicMaps: logicProps = {
   '15': [-1, 0],
 
   '20': [0, 2],
-  '21': [0, 1],
+  '21': [0, -1],
   '22': [0, 0],
-  '23': [0, -1],
+  '23': [0, 1],
   '24': [1, 0],
   '25': [-1, 0],
 
@@ -83,7 +83,7 @@ const logicMaps: logicProps = {
   '42': [0, -1],
   '43': [-1, 0],
   '44': [0, 0],
-  '45': [-2, 0],
+  '45': [2, 0],
 
   '50': [1, 0],
   '51': [0, -1],
@@ -100,7 +100,7 @@ const Cube: React.FC<CubeProps> = (props) => {
   const { speed = 1, planeNode, planeSize, unit = 'px' } = props;
   const index = props.index % 6 >> 0;
   const [sizeX, sizeY, sizeZ] = planeSize;
-  const dataStorage = useRef<dataStorageProps>({ lastIndex: null, lastDeg: [], lastLogic: [0, 0] });
+  const dataStorage = useRef<dataStorageProps>({ lastIndex: null, lastDeg: [] });
 
   // 缩放系数
   // 由于使用了 perspective ，使得子元素 translateZ 值 将影响此元素的缩放比例
@@ -172,22 +172,20 @@ const Cube: React.FC<CubeProps> = (props) => {
   ];
   const transformMove = useMemo((): string => {
     const { current } = dataStorage;
-    const { lastIndex, lastDeg, lastLogic } = current;
+    const { lastIndex, lastDeg } = current;
     // 如果是初始化， 直接返回上一个
     if (lastIndex === null) {
       // 记录上一个 索引,和 坐标值 为当前
       dataStorage.current = {
         lastIndex: index,
         lastDeg: originMaps[index],
-        lastLogic: [0, 0],
+        lastLogic: null,
       };
       return transformValue(dataStorage.current.lastDeg);
     }
-    const currentLogic = logicMaps[`${lastIndex}${index}`];
-    const currentDeg: number[] = currentLogic.map((logic, i) => {
-      const lastDegValue = lastDeg[i];
-      const lastLogicValue = currentLogic[i];
-      return lastDegValue + logic * 90;
+    const currentDeg: number[] = logicMaps[`${lastIndex}${index}`].map((item, i) => {
+      const value = lastDeg[i];
+      return value + item * 90;
     });
     console.log(`${lastIndex}${index}`);
     console.log(currentDeg);
@@ -200,7 +198,6 @@ const Cube: React.FC<CubeProps> = (props) => {
       dataStorage.current = {
         lastIndex: index,
         lastDeg: currentDeg,
-        lastLogic: currentLogic,
       };
     });
     return transformValue(currentDeg);

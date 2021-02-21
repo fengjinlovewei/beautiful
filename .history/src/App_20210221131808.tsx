@@ -6,7 +6,7 @@ import './App.css';
 
 function App() {
   const [move, setMove] = useState<boolean>(false);
-  const [index, setIndex] = useState<number>(0);
+  const [index, setIndex] = useState<number>(3);
   const btnReverse = () => {
     setMove((val) => !val);
   };

@@ -6,7 +6,7 @@ import './App.css';
 
 function App() {
   const [move, setMove] = useState<boolean>(false);
-  const [index, setIndex] = useState<number>(0);
+  const [index, setIndex] = useState<0 | 1 | 2 | 3 | 4 | 5>(3);
   const btnReverse = () => {
     setMove((val) => !val);
   };
@@ -16,7 +16,7 @@ function App() {
   const cubeMaps = Array(6)
     .fill(null)
     .map((item, i) => <div className={`cube cube-${i}`}>{i}</div>);
-  const cubeSizeMaps = [30, 30, 30];
+  const cubeSizeMaps = [10, 10, 10];
   return (
     <div className="App">
       <div className="App-header">

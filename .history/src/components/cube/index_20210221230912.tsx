@@ -65,9 +65,9 @@ const logicMaps: logicProps = {
   '15': [-1, 0],
 
   '20': [0, 2],
-  '21': [0, 1],
+  '21': [0, -1],
   '22': [0, 0],
-  '23': [0, -1],
+  '23': [0, 1],
   '24': [1, 0],
   '25': [-1, 0],
 
@@ -83,7 +83,7 @@ const logicMaps: logicProps = {
   '42': [0, -1],
   '43': [-1, 0],
   '44': [0, 0],
-  '45': [-2, 0],
+  '45': [2, 0],
 
   '50': [1, 0],
   '51': [0, -1],
@@ -179,14 +179,14 @@ const Cube: React.FC<CubeProps> = (props) => {
       dataStorage.current = {
         lastIndex: index,
         lastDeg: originMaps[index],
-        lastLogic: [0, 0],
+        lastLogic: '',
       };
       return transformValue(dataStorage.current.lastDeg);
     }
     const currentLogic = logicMaps[`${lastIndex}${index}`];
     const currentDeg: number[] = currentLogic.map((logic, i) => {
       const lastDegValue = lastDeg[i];
-      const lastLogicValue = currentLogic[i];
+      const lastLogicValue = currentLogic;
       return lastDegValue + logic * 90;
     });
     console.log(`${lastIndex}${index}`);

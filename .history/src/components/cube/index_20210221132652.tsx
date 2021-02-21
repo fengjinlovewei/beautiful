@@ -29,8 +29,7 @@ interface CubeProps {
 
 interface dataStorageProps {
   lastIndex: number | null;
-  lastDeg: number[];
-  lastLogic: number[];
+  lastMap: number[] | null;
 }
 
 interface logicProps {
@@ -50,7 +49,6 @@ const originMaps: number[][] = [
 // x 轴 顺时针为正数，逆时针为负数
 // y 轴 顺时针为负数，逆时针为正数
 const logicMaps: logicProps = {
-  '00': [0, 0],
   '01': [0, -1],
   '02': [0, 2],
   '03': [0, 1],
@@ -58,23 +56,20 @@ const logicMaps: logicProps = {
   '05': [-1, 0],
 
   '10': [0, 1],
-  '11': [0, 0],
   '12': [0, -1],
   '13': [0, 2],
   '14': [1, 0],
   '15': [-1, 0],
 
   '20': [0, 2],
-  '21': [0, 1],
-  '22': [0, 0],
-  '23': [0, -1],
+  '21': [0, -1],
+  '23': [0, 1],
   '24': [1, 0],
   '25': [-1, 0],
 
   '30': [0, -1],
   '31': [0, 2],
   '32': [0, 1],
-  '33': [0, 0],
   '34': [1, 0],
   '35': [-1, 0],
 
@@ -82,31 +77,30 @@ const logicMaps: logicProps = {
   '41': [1, 0],
   '42': [0, -1],
   '43': [-1, 0],
-  '44': [0, 0],
-  '45': [-2, 0],
+  '45': [2, 0],
 
   '50': [1, 0],
   '51': [0, -1],
   '52': [-1, 0],
   '53': [0, 1],
-  '55': [0, 0],
   '54': [2, 0],
 };
-const transformValue = (x_y: number[]) => {
-  const [x = 0, y = 0] = x_y;
+const transformValue = (arr: number[]) => {
+  const [x = 0, y = 0] = arr;
   return `rotateX(${x}deg) rotateY(${y}deg)`;
 };
 const Cube: React.FC<CubeProps> = (props) => {
   const { speed = 1, planeNode, planeSize, unit = 'px' } = props;
   const index = props.index % 6 >> 0;
   const [sizeX, sizeY, sizeZ] = planeSize;
-  const dataStorage = useRef<dataStorageProps>({ lastIndex: null, lastDeg: [], lastLogic: [0, 0] });
-
+  const dataStorage = useRef<dataStorageProps>({ lastIndex: null, lastMap: null });
   // 缩放系数
   // 由于使用了 perspective ，使得子元素 translateZ 值 将影响此元素的缩放比例
   // 当 translateZ 的值为正值，代表此元素离你更近了，所以就变大了
   // 当 translateZ 的值为负值，代表此元素离你更远了，所以就变小了
   // getCoefficient 的作用就是把缩放的元素，还原至原始大小
+  console.log(2222);
+  useEffect(() => {}, []);
   const coefficient = useMemo((): number => {
     const size = {
       px() {
@@ -171,39 +165,29 @@ const Cube: React.FC<CubeProps> = (props) => {
     },
   ];
   const transformMove = useMemo((): string => {
+    console.log('进入函数');
     const { current } = dataStorage;
-    const { lastIndex, lastDeg, lastLogic } = current;
+    const { lastIndex, lastMap } = current;
+
     // 如果是初始化， 直接返回上一个
     if (lastIndex === null) {
-      // 记录上一个 索引,和 坐标值 为当前
-      dataStorage.current = {
-        lastIndex: index,
-        lastDeg: originMaps[index],
-        lastLogic: [0, 0],
-      };
-      return transformValue(dataStorage.current.lastDeg);
+      // 记录上一个索引为当前
+      current.lastIndex = index;
+      // 记录上一个坐标信息为当前
+      current.lastMap = originMaps[index];
+      return transformValue(current.lastMap);
     }
-    const currentLogic = logicMaps[`${lastIndex}${index}`];
-    const currentDeg: number[] = currentLogic.map((logic, i) => {
-      const lastDegValue = lastDeg[i];
-      const lastLogicValue = currentLogic[i];
-      return lastDegValue + logic * 90;
-    });
+    // 记录上一个索引为当前
+    current.lastIndex = index;
+    console.log(lastIndex, current.lastIndex);
+    //if (i === lastIndex) return transform(lastMap || []);
     console.log(`${lastIndex}${index}`);
-    console.log(currentDeg);
-    /*******/
-    // 这尼玛真是个天坑啊！！！
-    // 不使用setTimeoust，修改 useref 的值，和赋值 useref 会引起渲染2次！
-    /*******/
-    setTimeout(() => {
-      // 记录上一个 索引,和 坐标值 为当前
-      dataStorage.current = {
-        lastIndex: index,
-        lastDeg: currentDeg,
-        lastLogic: currentLogic,
-      };
-    });
-    return transformValue(currentDeg);
+    // const currentLogic: number[] = logicMaps[`${lastIndex}${index}`].map((item, s) => {
+    //   const value = (lastMap || [0, 0])[s];
+    //   return value + item * 90;
+    // });
+    //console.log(currentLogic);
+    return transformValue([Math.random() * 100, Math.random() * 100]);
   }, [index]);
   return (
     <div className={`${Style['cube-container']}`} style={{ transform: `scale(${coefficient})` }}>
