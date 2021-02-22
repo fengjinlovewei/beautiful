@@ -15,3 +15,10 @@ html {
   height: 400px;
   background-color: blue;
 }
+.Fireworks-box {
+  position: relative;
+  width: 100vw;
+  height: 50vw;
+  z-index: 5;
+  background-color: black;
+}

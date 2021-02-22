@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
-import Reverse from './components/reverse';
-import Cube from './components/cube';
+import Reverse from './components/Reverse';
+import Cube from './components/Cube';
+import Fireworks from './components/Fireworks';
 import Demo from './components/demo';
 import './App.css';
 
@@ -51,6 +52,22 @@ function App() {
               unit="vw"
               direction="row-reverse"
               fixed={true}
+            />
+          </div>
+          <div style={{ marginTop: '100px' }}>
+            <button onClick={btnCube}>变换</button>
+          </div>
+        </div>
+        {/* 烟花 */}
+        <div className="type-item">
+          <div className="Fireworks-box">
+            <Fireworks
+              color="111"
+              width={1800}
+              height={900}
+              count={350}
+              interval={35}
+              length={[1, 8]}
             />
           </div>
           <div style={{ marginTop: '100px' }}>
