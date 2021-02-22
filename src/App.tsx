@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import Reverse from './components/reverse';
 import Cube from './components/cube';
 import Demo from './components/demo';
@@ -7,11 +7,18 @@ import './App.css';
 function App() {
   const [move, setMove] = useState<boolean>(false);
   const [index, setIndex] = useState<number>(0);
+  const data = useRef({ nowIndex: 0 });
   const btnReverse = () => {
     setMove((val) => !val);
   };
   const btnCube = () => {
-    setIndex((val) => ++val);
+    const nowIndex = data.current.nowIndex + 1;
+    //const key = (Math.random() * 4) >> 0;
+    const key = nowIndex % 4;
+    const n = [0, 1, 2, 3][key];
+    console.log(n);
+    setIndex(n);
+    data.current.nowIndex = nowIndex;
   };
   const cubeMaps = Array(6)
     .fill(null)
@@ -37,7 +44,14 @@ function App() {
         {/* 立方体 */}
         <div className="type-item">
           <div>
-            <Cube planeNode={cubeMaps} planeSize={cubeSizeMaps} index={index} unit="vw" />
+            <Cube
+              planeNode={cubeMaps}
+              planeSize={cubeSizeMaps}
+              index={index}
+              unit="vw"
+              direction="row-reverse"
+              fixed={true}
+            />
           </div>
           <div style={{ marginTop: '100px' }}>
             <button onClick={btnCube}>变换</button>
