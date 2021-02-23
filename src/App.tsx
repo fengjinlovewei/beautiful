@@ -2,12 +2,14 @@ import React, { useState, useRef } from 'react';
 import Reverse from './components/Reverse';
 import Cube from './components/Cube';
 import Fireworks from './components/Fireworks';
+import Arrows from './components/Arrows';
 import Demo from './components/demo';
 import './App.css';
 
 function App() {
   const [move, setMove] = useState<boolean>(false);
   const [index, setIndex] = useState<number>(0);
+  const [state, setState] = useState<boolean>(false);
   const data = useRef({ nowIndex: 0 });
   const btnReverse = () => {
     setMove((val) => !val);
@@ -25,6 +27,10 @@ function App() {
     .fill(null)
     .map((item, i) => <div className={`cube cube-${i}`}>{i}</div>);
   const cubeSizeMaps = [30, 30, 30];
+
+  const btnArrows = () => {
+    setState((val) => !val);
+  };
   return (
     <div className="App">
       <div className="App-header">
@@ -72,6 +78,15 @@ function App() {
           </div>
           <div style={{ marginTop: '100px' }}>
             <button onClick={btnCube}>变换</button>
+          </div>
+        </div>
+        {/* 箭头 */}
+        <div className="type-item">
+          <div>
+            <Arrows state={state} deg={40} />
+          </div>
+          <div style={{ marginTop: '100px' }}>
+            <button onClick={btnArrows}>变换</button>
           </div>
         </div>
       </div>
