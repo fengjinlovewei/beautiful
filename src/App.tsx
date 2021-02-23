@@ -3,6 +3,7 @@ import Reverse from './components/Reverse';
 import Cube from './components/Cube';
 import Fireworks from './components/Fireworks';
 import Arrows from './components/Arrows';
+import { RealisticLook, SchoolPride } from './components/Confetti';
 import Demo from './components/demo';
 import './App.css';
 
@@ -87,6 +88,16 @@ function App() {
           </div>
           <div style={{ marginTop: '100px' }}>
             <button onClick={btnArrows}>变换</button>
+          </div>
+        </div>
+        {/* 五彩纸屑 */}
+        <div className="type-item">
+          <div>
+            <p>五彩纸屑</p>
+          </div>
+          <div style={{ marginTop: '100px' }}>
+            <button onClick={RealisticLook}>一发</button>
+            <button onClick={() => SchoolPride()}>连发</button>
           </div>
         </div>
       </div>
