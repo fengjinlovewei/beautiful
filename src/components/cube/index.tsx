@@ -18,9 +18,13 @@ import Style from './index.module.scss';
  * 实际上，只要确定三条边就能确定一个立方体，那就是 正面的宽(x) 正面的高(y) 右侧面的宽(z)
  * 所以 planeSize 的参数，只需要传入3个值[x, y, z]就能确定立方体
  */
+
+/**
+ * 如果想要翻牌的效果，可以把参数z设置为0
+ */
 interface CubeProps {
   planeSize: number[]; // 传入x, y, z 的值
-  planeNode: React.ReactElement[]; // 这个数组的项必须是jsx，每个jsx的索引对应着每个面，映射关系参照上面的注释
+  planeNode: Array<React.ReactElement | ''>; // 这个数组的项必须是jsx，每个jsx的索引对应着每个面，映射关系参照上面的注释
   index: number; // 要显示在正前方的面的索引值， 参照上面的注释
   speed?: number; // 切换平面时的运动速度
   unit?: 'px' | 'rem' | 'vw' | 'vh'; // 传入的x, y, z 的值的长度单位
@@ -219,7 +223,7 @@ const Cube: React.FC<CubeProps> = (props) => {
               style={item.style}
               key={i}
             >
-              <div className={`${Style['item-info']}`}>{planeNode[i] ? planeNode[i] : ''}</div>
+              <div className={`${Style['item-info']}`}>{planeNode[i]}</div>
             </div>
           );
         })}

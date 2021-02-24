@@ -31,6 +31,8 @@ const postcssNormalize = require('postcss-normalize');
 
 const appPackageJson = require(paths.appPackageJson);
 
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+
 // Source maps are resource heavy and can cause out of memory issue for large source files.
 const shouldUseSourceMap = process.env.GENERATE_SOURCEMAP !== 'false';
 
@@ -525,6 +527,7 @@ module.exports = function (webpackEnv) {
     },
     plugins: [
       // Generates an `index.html` file with the <script> injected.
+      new BundleAnalyzerPlugin({ analyzerPort: 1991 }),
       new HtmlWebpackPlugin(
         Object.assign(
           {},

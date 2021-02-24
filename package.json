@@ -48,6 +48,7 @@
     "jest-watch-typeahead": "0.6.1",
     "mini-css-extract-plugin": "0.11.3",
     "node-sass": "^4.14.1",
+    "oasis-engine": "^0.2.1",
     "optimize-css-assets-webpack-plugin": "5.0.4",
     "pnp-webpack-plugin": "1.6.4",
     "postcss-flexbugs-fixes": "4.2.1",
@@ -80,7 +81,8 @@
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js",
-    "dev": "npm run start"
+    "dev": "npm run start",
+    "analyzer": "cross-env use_analyzer=true npm run build"
   },
   "eslintConfig": {
     "extends": [
@@ -156,5 +158,9 @@
     "presets": [
       "react-app"
     ]
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "webpack-bundle-analyzer": "^4.4.0"
   }
 }
