@@ -7,6 +7,7 @@ import {
   TextureFilterMode,
   TextureWrapMode,
   Vector3,
+  Vector4,
   WebGLEngine,
   WrapMode,
   Color,
@@ -24,7 +25,9 @@ export default (canvas: HTMLCanvasElement) => {
   //-- create camera
   const cameraEntity = rootEntity.createChild('camera_entity');
   cameraEntity.transform.position = new Vector3(0, 0, 50);
-  cameraEntity.addComponent(Camera);
+  const camera = cameraEntity.addComponent(Camera);
+
+  camera.backgroundColor = new Vector4(1, 0.647, 0, 1);
 
   engine.run();
 
@@ -51,7 +54,6 @@ export default (canvas: HTMLCanvasElement) => {
       particles.rotateVelocityRandomness = 1;
       particles.size = 1;
       particles.sizeRandomness = 0.8;
-      particles.color = new Color(0, 164, 255, 1);
       particles.colorRandomness = 1;
       particles.isFadeIn = true;
       particles.isFadeOut = true;

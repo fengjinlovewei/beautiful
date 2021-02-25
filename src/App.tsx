@@ -11,6 +11,7 @@ import Confetti, {
   SchoolPride,
 } from './components/Confetti';
 import WebGLSnow from './components/OasisEngine/Snow';
+import WebGLRole from './components/OasisEngine/Role';
 import Demo from './components/other/Demo';
 import './App.css';
 
@@ -146,6 +147,7 @@ function App() {
         <div className="type-item">
           <div>
             <WebGLSnow />
+            <WebGLRole />
           </div>
           <div style={{ marginTop: '100px' }}>
             <button onClick={btnArrows}>变换</button>
