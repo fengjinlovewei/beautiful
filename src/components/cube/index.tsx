@@ -23,10 +23,11 @@ import Style from './index.module.scss';
  * 如果想要翻牌的效果，可以把参数z设置为0
  */
 interface CubeProps {
-  planeSize: number[]; // 传入x, y, z 的值
+  planeSize: [number, number, number]; // 传入x, y, z 的值
   planeNode: Array<React.ReactElement | ''>; // 这个数组的项必须是jsx，每个jsx的索引对应着每个面，映射关系参照上面的注释
   index: number; // 要显示在正前方的面的索引值， 参照上面的注释
   speed?: number; // 切换平面时的运动速度
+  perspective?: number; // 设置透视点距离
   unit?: 'px' | 'rem' | 'vw' | 'vh'; // 传入的x, y, z 的值的长度单位
   // 1. 在 fixed参数值 为 false 的情况下，
   // row 与 row-reverse 的效果等价， 都是左右切换，也就是在Y轴上切换
@@ -38,7 +39,7 @@ interface CubeProps {
   // row-reverse：不会寻找最短路径， 总是从右向左旋转
   // column：不会寻找最短路径，总是从上向下旋转
   // column-reverse：不会寻找最短路径， 总是从下向上旋转
-  direction?: 'row' | 'row-reverse' | 'column' | 'column-reverse';
+  direction?: 'row' | 'row-reverse' | 'column' | 'column-reverse' | 'all';
   fixed?: boolean;
 }
 
@@ -79,6 +80,11 @@ const directionMaps = {
     deg: [-1, 0],
     plane2: '0',
   },
+  all: {
+    list: [0, 1, 2, 3, 4, 5],
+    deg: [0, 0],
+    plane2: '180',
+  },
 };
 
 const transformValue = (x_y: number[]) => {
@@ -86,7 +92,15 @@ const transformValue = (x_y: number[]) => {
   return `rotateX(${x}deg) rotateY(${y}deg)`;
 };
 const Cube: React.FC<CubeProps> = (props) => {
-  const { speed = 1, planeNode, planeSize, unit = 'px', direction = 'row', fixed = false } = props;
+  const {
+    speed = 1,
+    planeNode,
+    planeSize,
+    perspective = 1200,
+    unit = 'px',
+    direction = 'row',
+    fixed = false,
+  } = props;
   const index = props.index % 6 >> 0;
   const [sizeX, sizeY, sizeZ] = planeSize;
   const dataStorage = useRef<dataStorageProps>({ lastIndex: null, lastDeg: [] });
@@ -94,8 +108,8 @@ const Cube: React.FC<CubeProps> = (props) => {
   // 由于使用了 perspective ，使得子元素 translateZ 值 将影响此元素的缩放比例
   // 当 translateZ 的值为正值，代表此元素离你更近了，所以就变大了
   // 当 translateZ 的值为负值，代表此元素离你更远了，所以就变小了
-  // getCoefficient 的作用就是把缩放的元素，还原至原始大小
-  const coefficient = useMemo((): number => {
+  // coefficient 的作用就是把缩放的元素，还原至原始大小
+  const scale = useMemo((): number => {
     const size = {
       px() {
         return sizeZ;
@@ -112,7 +126,10 @@ const Cube: React.FC<CubeProps> = (props) => {
         return (window.innerHeight / 100) * sizeZ;
       },
     }[unit]();
-    return 1200 / (1200 + size / 2);
+    // 相对于原元素放大比例系数，放大了多少倍 (d / d -z)
+    const coefficient = perspective / (perspective - size / 2);
+    // 还原比例
+    return 1 / coefficient;
   }, [sizeZ, unit]);
   const List = useMemo(() => {
     const { plane2 } = directionMaps[direction];
@@ -177,6 +194,9 @@ const Cube: React.FC<CubeProps> = (props) => {
       return transformValue(dataStorage.current.lastDeg);
     }
     const currentDeg = (() => {
+      if (direction === 'all') {
+        return originMaps[index];
+      }
       return lastDeg.map((item, i) => {
         let n = list.indexOf(index) - list.indexOf(lastIndex);
         if (n === -3) {
@@ -206,7 +226,10 @@ const Cube: React.FC<CubeProps> = (props) => {
     return transformValue(currentDeg);
   }, [index, direction]);
   return (
-    <div className={`${Style['cube-container']}`} style={{ transform: `scale(${coefficient})` }}>
+    <div
+      className={`${Style['cube-container']}`}
+      style={{ perspective: `${perspective}px`, transform: `scale(${scale}) ` }}
+    >
       <div
         className={`${Style['cube-info']}`}
         style={{

@@ -1,4 +1,7 @@
 import React, { useState, useRef } from 'react';
+
+import Reverse from './components/other/Reverse';
+
 import Cube from './components/Cube';
 import Fireworks from './components/Fireworks';
 import Arrows from './components/Arrows';
@@ -16,21 +19,26 @@ import Demo from './components/other/Demo';
 import './App.css';
 
 function App() {
+  const [move, setMove] = useState<boolean>(false);
   const [indexReverse, setIndexReverse] = useState<number>(0);
   const [indexCube, setIndexCube] = useState<number>(0);
   const [state, setState] = useState<boolean>(false);
   const CubeRef = useRef({ nowIndex: 0 });
   const ConfettiRef = useRef<any>(null);
+  const btnMove = () => {
+    setMove((val) => !val);
+  };
   //翻牌子
   const btnReverse = () => {
     setIndexReverse((val) => (val === 0 ? 2 : 0));
   };
   //立方体
+  const direction = 'all';
   const btnCube = () => {
     const nowIndex = CubeRef.current.nowIndex + 1;
-    //const key = (Math.random() * 4) >> 0;
-    const key = nowIndex % 4;
-    const n = [0, 1, 2, 3][key];
+    //const key = (Math.random() * 6) >> 0;
+    const key = nowIndex % 6;
+    const n = [0, 1, 2, 3, 4, 5][key];
     console.log(n);
     setIndexCube(n);
     CubeRef.current.nowIndex = nowIndex;
@@ -45,6 +53,19 @@ function App() {
         {/* 翻牌子 */}
         <div className="type-item">
           <div>
+            <Reverse
+              front={<div className="d1">正面</div>}
+              back={<div className="d2">背面</div>}
+              move={move}
+            />
+          </div>
+          <div>
+            <button onClick={btnMove}>变换</button>
+          </div>
+        </div>
+        {/* 翻牌子 */}
+        <div className="type-item">
+          <div>
             <Cube
               planeNode={[
                 <div className={`cube cube-0`}>0</div>,
@@ -54,11 +75,12 @@ function App() {
                 '',
                 '',
               ]}
-              planeSize={[70, 100, 0]}
+              planeSize={[40, 60, 0]}
               index={indexReverse}
               unit="vw"
               direction="row-reverse"
               fixed={false}
+              perspective={800}
             />
           </div>
           <div>
@@ -77,15 +99,16 @@ function App() {
                 <div className={`cube cube-4`}>4</div>,
                 <div className={`cube cube-5`}>5</div>,
               ]}
-              planeSize={[70, 70, 70]}
+              planeSize={[200, 200, 200]}
               index={indexCube}
-              unit="vw"
-              direction="row-reverse"
-              fixed={true}
+              unit="px"
+              direction={direction}
+              fixed={false}
             />
           </div>
           <div style={{ marginTop: '100px' }}>
-            <button onClick={btnCube}>变换</button>
+            <button onClick={btnCube}>左右变换</button>
+            <button onClick={btnCube}>上下变换</button>
           </div>
         </div>
         {/* 烟花 */}

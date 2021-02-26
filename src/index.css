@@ -6,13 +6,13 @@ html {
   font-size: 20px;
 }
 .d1 {
-  width: 200px;
-  height: 400px;
+  width: 40vw;
+  height: 60vw;
   background-color: red;
 }
 .d2 {
-  width: 200px;
-  height: 400px;
+  width: 40vw;
+  height: 60vw;
   background-color: blue;
 }
 .Fireworks-box {
