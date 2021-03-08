@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 
 import Reverse from './components/other/Reverse';
 
@@ -25,6 +25,7 @@ function App() {
   const [state, setState] = useState<boolean>(false);
   const CubeRef = useRef({ nowIndex: 0 });
   const ConfettiRef = useRef<any>(null);
+  const roleRef = useRef<any>(null);
   const btnMove = () => {
     setMove((val) => !val);
   };
@@ -33,12 +34,14 @@ function App() {
     setIndexReverse((val) => (val === 0 ? 2 : 0));
   };
   //立方体
-  const direction = 'all';
+  const direction = 'row';
+  // 固定轨迹
+  const fixed = false;
   const btnCube = () => {
     const nowIndex = CubeRef.current.nowIndex + 1;
-    //const key = (Math.random() * 6) >> 0;
-    const key = nowIndex % 6;
-    const n = [0, 1, 2, 3, 4, 5][key];
+    //const key = (Math.random() * 4) >> 0;
+    const key = nowIndex % 4;
+    const n = [0, 3, 2, 1][key];
     console.log(n);
     setIndexCube(n);
     CubeRef.current.nowIndex = nowIndex;
@@ -46,6 +49,25 @@ function App() {
   //箭头
   const btnArrows = () => {
     setState((val) => !val);
+  };
+  const roleCallBack = useCallback((obj) => {
+    console.log(obj);
+    roleRef.current = obj;
+  }, []);
+  const btnRole = (type: number) => {
+    if (roleRef.current) {
+      const { animator, animations } = roleRef.current;
+      if (type === 1) {
+        console.log(1);
+        animator.playAnimationClip('walk');
+      }
+      if (type === 2) {
+        animator.playAnimationClip(animations[0].name);
+      }
+      if (type === 3) {
+        animator.playAnimationClip(animations[0].name);
+      }
+    }
   };
   return (
     <div className="App">
@@ -103,12 +125,11 @@ function App() {
               index={indexCube}
               unit="px"
               direction={direction}
-              fixed={false}
+              fixed={fixed}
             />
           </div>
           <div style={{ marginTop: '100px' }}>
-            <button onClick={btnCube}>左右变换</button>
-            <button onClick={btnCube}>上下变换</button>
+            <button onClick={btnCube}>变换</button>
           </div>
         </div>
         {/* 烟花 */}
@@ -130,7 +151,7 @@ function App() {
         {/* 箭头 */}
         <div className="type-item">
           <div>
-            <Arrows state={state} deg={40} width={20} />
+            <Arrows state={state} deg={100} width={20} direction="row" />
           </div>
           <div style={{ marginTop: '100px' }}>
             <button onClick={btnArrows}>变换</button>
@@ -170,10 +191,10 @@ function App() {
         <div className="type-item">
           <div>
             <WebGLSnow />
-            <WebGLRole />
+            <WebGLRole callback={roleCallBack} />
           </div>
           <div style={{ marginTop: '100px' }}>
-            <button onClick={btnArrows}>变换</button>
+            <button onClick={() => btnRole(1)}>变换</button>
           </div>
         </div>
       </div>

@@ -19,7 +19,6 @@ interface FireworksProps {
 const Fireworks: React.FC<FireworksProps> = (props) => {
   const {
     state,
-    deg = 40,
     speed = 0.25,
     color = '#b05d20',
     unit = 'px',
@@ -28,6 +27,8 @@ const Fireworks: React.FC<FireworksProps> = (props) => {
     className = '',
     direction = 'column',
   } = props;
+  let { deg = 100 } = props;
+  deg = 90 - deg / 2;
   const boxStyle = useMemo(() => {
     // 根据主轴控制旋转
     const rotate = { row: 90, column: 0 }[direction];
