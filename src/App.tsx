@@ -15,6 +15,7 @@ import Confetti, {
 } from './components/Confetti';
 import WebGLSnow from './components/OasisEngine/Snow';
 import WebGLRole from './components/OasisEngine/Role';
+import LuckyWheel from './components/LuckyWheel';
 import Demo from './components/other/Demo';
 import './App.css';
 
@@ -191,7 +192,16 @@ function App() {
         <div className="type-item">
           <div>
             <WebGLSnow />
-            <WebGLRole callback={roleCallBack} />
+            {/* <WebGLRole callback={roleCallBack} /> */}
+          </div>
+          <div style={{ marginTop: '100px' }}>
+            <button onClick={() => btnRole(1)}>变换</button>
+          </div>
+        </div>
+        {/* webGL 的雪花*/}
+        <div className="type-item">
+          <div>
+            <LuckyWheel></LuckyWheel>
           </div>
           <div style={{ marginTop: '100px' }}>
             <button onClick={() => btnRole(1)}>变换</button>
