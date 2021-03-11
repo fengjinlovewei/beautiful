@@ -1,18 +1,18 @@
 import React, { useEffect, useRef } from 'react';
 import Style from './index.module.scss';
-import Wheel from './MethodBase';
+import LuckyWheelController from './MethodBase';
 
 /**
  *
  */
 interface LuckyWheelProps {}
 
-const Fireworks: React.FC<LuckyWheelProps> = (props) => {
+const LuckyWheel: React.FC<LuckyWheelProps> = (props) => {
   const content = useRef(null);
-  const wheel = useRef<Wheel | null>(null);
+  const wheel = useRef<LuckyWheelController | null>(null);
   const state = useRef<boolean>(true);
   useEffect(() => {
-    wheel.current = new Wheel(content.current, 20);
+    wheel.current = new LuckyWheelController(content.current, 20);
   }, []);
   const begin = () => {
     if (state.current) {
@@ -34,4 +34,4 @@ const Fireworks: React.FC<LuckyWheelProps> = (props) => {
   );
 };
 
-export default Fireworks;
+export default LuckyWheel;

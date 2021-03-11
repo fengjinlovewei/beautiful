@@ -1,0 +1,18 @@
+.Sudoku-box {
+  width: 64vw;
+  height: 64vw;
+  position: relative;
+  .Sudoku-item {
+    position: absolute;
+    width: 20vw;
+    height: 20vw;
+    line-height: 20vw;
+    border: 1px solid #eee;
+    box-sizing: border-box;
+    text-align: center;
+  }
+  .active {
+    background-color: purple;
+    color: #fff;
+  }
+}

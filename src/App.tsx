@@ -16,6 +16,7 @@ import Confetti, {
 import WebGLSnow from './components/OasisEngine/Snow';
 import WebGLRole from './components/OasisEngine/Role';
 import LuckyWheel from './components/LuckyWheel';
+import Sudoku from './components/Sudoku';
 import Demo from './components/other/Demo';
 import './App.css';
 
@@ -198,10 +199,19 @@ function App() {
             <button onClick={() => btnRole(1)}>变换</button>
           </div>
         </div>
-        {/* webGL 的雪花*/}
+        {/* 大转盘*/}
         <div className="type-item">
           <div>
             <LuckyWheel></LuckyWheel>
+          </div>
+          <div style={{ marginTop: '100px' }}>
+            <button onClick={() => btnRole(1)}>变换</button>
+          </div>
+        </div>
+        {/* 九宫格*/}
+        <div className="type-item">
+          <div>
+            <Sudoku></Sudoku>
           </div>
           <div style={{ marginTop: '100px' }}>
             <button onClick={() => btnRole(1)}>变换</button>

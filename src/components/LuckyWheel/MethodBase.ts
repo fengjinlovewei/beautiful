@@ -1,4 +1,4 @@
-class Wheel {
+class LuckyWheelController {
   private speed: number; // 速度
   private pointer: any; // 旋转dom
   private timer: number | null; // 定时器id
@@ -78,4 +78,4 @@ class Wheel {
   }
 }
 
-export default Wheel;
+export default LuckyWheelController;
