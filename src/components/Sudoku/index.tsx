@@ -67,7 +67,7 @@ const Sudoku: React.FC<SudokuProps> = (props) => {
       (index) => {
         setIndex(index);
       },
-      100,
+      70,
     );
   }, []);
   const begin = () => {
